@@ -105,7 +105,10 @@ public class WordStore implements Store<Word>, AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        if (connection != null) {
+        if (connection != null && !connection.isClosed()) {
+            try (Statement statement = connection.createStatement()){
+                statement.execute("shutdown");
+            }
             connection.close();
         }
     }
